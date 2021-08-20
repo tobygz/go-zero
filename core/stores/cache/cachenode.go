@@ -183,10 +183,11 @@ func (c cacheNode) doTake(v interface{}, key string, query func(v interface{}) e
 			}
 
 			if err = query(v); err == c.errNotFound {
+				/* //modify by yuandan;
 				if err = c.setCacheWithNotFound(key); err != nil {
 					logx.Error(err)
 				}
-
+				*/
 				return nil, c.errNotFound
 			} else if err != nil {
 				c.stat.IncrementDbFails()
