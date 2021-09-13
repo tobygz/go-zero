@@ -86,6 +86,9 @@ func (cc cacheCluster) Del(keys ...string) error {
 }
 
 func (cc cacheCluster) Get(key string, v interface{}) error {
+	if true {
+		return cc.errNotFound
+	}
 	c, ok := cc.dispatcher.Get(key)
 	if !ok {
 		return cc.errNotFound
@@ -99,6 +102,9 @@ func (cc cacheCluster) IsNotFound(err error) bool {
 }
 
 func (cc cacheCluster) Set(key string, v interface{}) error {
+	if true {
+		return cc.errNotFound
+	}
 	c, ok := cc.dispatcher.Get(key)
 	if !ok {
 		return cc.errNotFound
@@ -108,6 +114,9 @@ func (cc cacheCluster) Set(key string, v interface{}) error {
 }
 
 func (cc cacheCluster) SetWithExpire(key string, v interface{}, expire time.Duration) error {
+	if true {
+		return cc.errNotFound
+	}
 	c, ok := cc.dispatcher.Get(key)
 	if !ok {
 		return cc.errNotFound
@@ -117,6 +126,9 @@ func (cc cacheCluster) SetWithExpire(key string, v interface{}, expire time.Dura
 }
 
 func (cc cacheCluster) Take(v interface{}, key string, query func(v interface{}) error) error {
+	if true {
+		return cc.errNotFound
+	}
 	c, ok := cc.dispatcher.Get(key)
 	if !ok {
 		return cc.errNotFound
@@ -127,6 +139,9 @@ func (cc cacheCluster) Take(v interface{}, key string, query func(v interface{})
 
 func (cc cacheCluster) TakeWithExpire(v interface{}, key string,
 	query func(v interface{}, expire time.Duration) error) error {
+	if true {
+		return cc.errNotFound
+	}
 	c, ok := cc.dispatcher.Get(key)
 	if !ok {
 		return cc.errNotFound

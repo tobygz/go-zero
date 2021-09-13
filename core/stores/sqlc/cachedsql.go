@@ -22,6 +22,8 @@ var (
 	stats          = cache.NewStat("sqlc")
 )
 
+var Flag_use_cache bool = false
+
 type (
 	// ExecFn defines the sql exec method.
 	ExecFn func(conn sqlx.SqlConn) (sql.Result, error)
@@ -86,6 +88,9 @@ func (cc CachedConn) ExecNoCache(q string, args ...interface{}) (sql.Result, err
 
 // QueryRow unmarshals into v with given key and query func.
 func (cc CachedConn) QueryRow(v interface{}, key string, query QueryFn) error {
+	if !Flag_use_cache {
+		return query(cc.db, v)
+	}
 	return cc.cache.Take(v, key, func(v interface{}) error {
 		return query(cc.db, v)
 	})
@@ -96,6 +101,9 @@ func (cc CachedConn) QueryRowIndex(v interface{}, key string, keyer func(primary
 	indexQuery IndexQueryFn, primaryQuery PrimaryQueryFn) error {
 	var primaryKey interface{}
 	var found bool
+	if !Flag_use_cache {
+		return primaryQuery(cc.db, v, primaryKey)
+	}
 
 	if err := cc.cache.TakeWithExpire(&primaryKey, key, func(val interface{}, expire time.Duration) (err error) {
 		primaryKey, err = indexQuery(cc.db, v)
