@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -13,6 +14,7 @@ const (
 	envPodIp = "POD_IP"
 )
 
+/*
 // NewRpcPubServer returns a Server.
 func NewRpcPubServer(etcdEndpoints []string, etcdKey, listenOn string, opts ...ServerOption) (Server, error) {
 	registerEtcd := func() error {
@@ -27,14 +29,34 @@ func NewRpcPubServer(etcdEndpoints []string, etcdKey, listenOn string, opts ...S
 
 	return server, nil
 }
+*/
+
+// NewRpcPubServer returns a Server.
+func NewRpcPubServer(etcdEndpoints []string, etcdKey, listenOn string, opts ...ServerOption) (Server, error) {
+	pubListenOn := figureOutListenOn(listenOn)
+	pubClient := discov.NewPublisher(etcdEndpoints, etcdKey, pubListenOn)
+	server := keepAliveServer{
+		//registerEtcd: registerEtcd,
+		PubClient: pubClient,
+		Server:    NewRpcServer(listenOn, opts...),
+	}
+
+	return server, nil
+}
 
 type keepAliveServer struct {
-	registerEtcd func() error
+	//registerEtcd func() error
+	PubClient *discov.Publisher
 	Server
 }
 
+func (ags keepAliveServer) Stop() {
+	fmt.Println("called keepAliveServer stop")
+	ags.PubClient.Stop()
+}
+
 func (ags keepAliveServer) Start(fn RegisterFn) error {
-	if err := ags.registerEtcd(); err != nil {
+	if err := ags.PubClient.KeepAlive(); err != nil {
 		return err
 	}
 

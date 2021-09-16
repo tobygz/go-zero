@@ -15,6 +15,7 @@ type (
 		AddStreamInterceptors(interceptors ...grpc.StreamServerInterceptor)
 		AddUnaryInterceptors(interceptors ...grpc.UnaryServerInterceptor)
 		SetName(string)
+		Stop()
 		Start(register RegisterFn) error
 	}
 
@@ -48,4 +49,7 @@ func (s *baseRpcServer) AddUnaryInterceptors(interceptors ...grpc.UnaryServerInt
 
 func (s *baseRpcServer) SetName(name string) {
 	s.metrics.SetName(name)
+}
+
+func (s *baseRpcServer) Stop() {
 }

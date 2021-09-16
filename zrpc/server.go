@@ -90,6 +90,7 @@ func (rs *RpcServer) Start() {
 
 // Stop stops the RpcServer.
 func (rs *RpcServer) Stop() {
+	rs.server.Stop()
 	logx.Close()
 }
 
