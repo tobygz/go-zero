@@ -18,6 +18,10 @@ func init() {
 
 		// https://golang.org/pkg/os/signal/#Notify
 		signals := make(chan os.Signal, 1)
+		if true {
+			// signal was catched by logic_server.
+			return
+		}
 		signal.Notify(signals, syscall.SIGUSR1, syscall.SIGUSR2, syscall.SIGTERM)
 
 		for {
